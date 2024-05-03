@@ -8,6 +8,7 @@ const User = require('./model/User')
 const Menu = require('./model/Menu')
 const Ingredient = require('./model/Ingredient')
 const Item = require('./model/Item')
+const Reservation = require("./model/Reservation")
 const Table = require('./model/Table')
 const Order = require('./model/Order')
 
@@ -133,6 +134,34 @@ app.delete('/orders', async (req,res) => {
       return res.status(400).json({message: `order _id ${req.body._id} not found`})
     }
     const result = await Order.deleteOne({_id: req.body._id})
+    res.json(result)
+})
+
+app.get('/reservations', async (req,res) => {
+     const reservations = await Reservation.find()
+     res.json(reservations)
+})
+
+app.post('/reservations', async (req,res) => {
+    if(!req.body) {
+        return res.status(400).json({message: "body is required"})
+    }
+    const result = await Reservation.create({
+        tableNumber: req.body.tableNumber,
+        name: req.body.name
+    })
+    res.json(result)
+})
+
+app.delete('/reservations', async (req,res) => {
+    if(!req.body._id) {
+        return res.status(400).json({message: "_id is required"})
+    }
+    const order = await Reservation.findOne({_id: req.body._id})
+    if(!order) {
+      return res.status(400).json({message: `order _id ${req.body._id} not found`})
+    }
+    const result = await Reservation.deleteOne({_id: req.body._id})
     res.json(result)
 })
 
